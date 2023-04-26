@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:1.23
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - './client:/var/www/vue'
+      - './nginx:/etc/nginx/conf.d'
+    networks:
+      - app-network
+    depends_on:
+      - socket
+  
+  socket:
+    build: './socket'
+    volumes:
+      - './socket:/var/www/socket'
+    networks:
+      - app-network
+  
+  node:
+    build: './node'
+    working_dir: /var/www/php
+    volumes:
+      - './client:/var/www'
+    
+networks:
+  app-network:
+    driver: bridge
